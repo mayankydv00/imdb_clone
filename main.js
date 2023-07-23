@@ -5,43 +5,14 @@ const getMovie = async(title) => {
     const getMovieInfo = async(page = 1 ) => {
         const res = await fetch(`https://www.omdbapi.com/?s=${title}&page=${page}&apikey=ef546c6`);
     
-    let mainContainer = document.getElementById('listContainer');
-    const list = await res.json();
-    mainContainer.innerHTML = "" ;
-
-    for(let i = 0; i < list["Search"].length; i++){
-
-        let container = document.createElement('div');
-        container.classList.add('movieContainer');
-        let title = document.createElement('div');
-        title.classList.add('movieTitle');
-        let poster = document.createElement('img');
-        poster.classList.add('moviePoster');
-        title.innerHTML = list["Search"][i].Title;
-        poster.src = list["Search"][i].Poster;
-
-        poster.addEventListener('error', function() {
-        poster.src = 'images/alternate_img.jpg';
-        });
-        
-        poster.alt = "images/alternate_img.jpg";
-        // poster.alt = "images/alternate_img.jpg";
-        container.append(title);
-        container.append(poster);
-        container.setAttribute('data-movie-title',list["Search"][i].Title);
-        container.onclick = function() {getMovieDetails(list["Search"][i].imdbID)} ; // 
-        mainContainer.append(container);
-        
-    }
-        const res = await fetch(`https://www.omdbapi.com/?s=${title}&page=${page}&apikey=ef546c6`);
         let mainContainer = document.getElementById('listContainer');
-        mainContainer.innerHTML = "";
         const list = await res.json();
+
         mainContainer.innerHTML = "" ;
         totalPages = Math.ceil(list["totalResults"] / 10);
-    
+
         for(let i = 0; i < list["Search"].length; i++){
-    
+
             let container = document.createElement('div');
             container.classList.add('movieContainer');
             let title = document.createElement('div');
@@ -50,24 +21,23 @@ const getMovie = async(title) => {
             poster.classList.add('moviePoster');
             title.innerHTML = list["Search"][i].Title;
             poster.src = list["Search"][i].Poster;
-    
+
             poster.addEventListener('error', function() {
-            // poster.src = 'images/alternate_img.jpg';
+            poster.src = 'images/alternate_img.jpg';
             });
             
             poster.alt = "images/alternate_img.jpg";
-            poster.alt = "images/alternate_img.jpg";
+            // poster.alt = "images/alternate_img.jpg";
             container.append(title);
             container.append(poster);
             container.setAttribute('data-movie-title',list["Search"][i].Title);
-            container.onclick = function() {getMovieDetails(list["Search"][i].Title)} ;
+            container.onclick = function() {getMovieDetails(list["Search"][i].imdbID)} ; // 
             mainContainer.append(container);
             
         }
     }
 
     function setupPagination() {
-        console.log("Heelo")
         const pagination = document.querySelector('.pagination-container');
         pagination.innerHTML = "";
 
@@ -76,8 +46,6 @@ const getMovie = async(title) => {
             link.href = "#";
             link.innerText = i;
 
-            console.log(link)
-
             if (i === currentPage) {
                 link.classList.add("active");
             }
@@ -85,7 +53,7 @@ const getMovie = async(title) => {
             link.addEventListener("click", (event) => {
                 event.preventDefault();
                 currentPage = i;
-                getMovie(currentPage);
+                getMovieInfo(currentPage , i);
 
                 const currentActive = pagination.querySelector(".active");
                 currentActive.classList.remove("active");
@@ -163,6 +131,9 @@ const getMovieDetails = async(movieId) => {
     crossButton.classList.add("crossButton");
     crossButton.onclick = function(){ 
         let box = document.getElementsByClassName("movieDetailContainer");
+
+        box[0].remove();
+        // box.innerHTML = "sdhh";
         
 
      };
@@ -187,11 +158,6 @@ const getMovieDetails = async(movieId) => {
     container.append(director);
 
     document.getElementById("listContainer").append(container);
-    // console.log(res);
-
-
-
-    // const info = 
 } 
 
 function searchMovie(){
